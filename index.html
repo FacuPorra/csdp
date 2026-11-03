@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CSDP</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#161819">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CSDP">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:#161819;color:#e8ecee;font-family:system-ui,sans-serif}
+  body{padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+  iframe{border:0;width:100%;height:100%;display:block;background:#161819}
+  #msg{padding:24px 16px;line-height:1.5}
+</style>
+</head>
+<body>
+<!-- ÚNICA LÍNEA A EDITAR: pegá entre las comillas la URL de tu app (la que termina en /exec) -->
+<script>const APP_SCRIPT_URL = 'PEGAR_ACA_LA_URL_QUE_TERMINA_EN_/exec';</script>
+
+<iframe id="app" title="CSDP Progresiones" allow="clipboard-write"></iframe>
+<script>
+(function(){
+  var KEY='csdp-token';
+  var p=new URLSearchParams(location.search);
+  var tok=p.get('a');
+  try{
+    if(p.has('admin')) localStorage.removeItem(KEY);      // ?admin = volver a la vista de profes
+    if(tok) localStorage.setItem(KEY,tok);                 // primer ingreso del alumno: se recuerda su link
+    else if(!p.has('admin')) tok=localStorage.getItem(KEY);
+  }catch(e){}
+  if(APP_SCRIPT_URL.indexOf('/exec')<0){
+    document.body.innerHTML='<p id="msg">Falta configurar la URL de la app en index.html.</p>';return;
+  }
+  document.getElementById('app').src=APP_SCRIPT_URL+(tok?'?a='+encodeURIComponent(tok):'');
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
+})();
+</script>
+</body>
+</html>
